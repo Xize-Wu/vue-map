@@ -9,8 +9,9 @@
   },
   "dependencies": {
     "dotenv": "^16.3.1",
-    "vue": "^3.3.4",
-    "vue2-google-maps": "^0.10.7"
+    "vue": "^3.2.36",
+    "vue-router": "^4.2.5",
+    "vue3-google-map": "^0.18.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.4.0",
