@@ -2,6 +2,10 @@
   <div>
     <h1>Google Map App</h1>
     <div>
+      <div>
+        <input v-model="customQuery" placeholder="Name of Location" />
+        <button @click="searchCustomQuery">Search</button>
+      </div>
       <div id="map" style="width: 100%; height: 400px;"></div>
     </div>
   </div>
@@ -24,7 +28,7 @@ export default {
   mounted() {
     window.initMap = this.initMap;
 
-// Error handler needed!
+    // Error handler needed!
     if (typeof google !== 'undefined') {
       this.initMap();
       console.log("Fuiyoh! You have a functional Google Map API!");
@@ -43,17 +47,7 @@ export default {
       });
 
       this.service = new google.maps.places.PlacesService(this.map);
-      this.service.findPlaceFromQuery(this.request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-          for (let i = 0; i < results.length; i++) {
-            this.createMarker(results[i]);
-          }
 
-          this.map.setCenter(results[0].geometry.location);
-
-          this.saveMarkers();
-        }
-      });
     },
     createMarker(place) {
       if (!place.geometry || !place.geometry.location) return;
@@ -73,6 +67,24 @@ export default {
       };
 
       this.markers.push(markerInfo);
+    },
+    searchCustomQuery() {
+      // Set the request query to the customQuery value
+      this.request.query = this.customQuery;
+
+      // Trigger a new search with the custom query
+      this.service.findPlaceFromQuery(this.request, (results, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+          for (let i = 0; i < results.length; i++) {
+            this.createMarker(results[i]);
+          }
+
+          this.map.setCenter(results[0].geometry.location);
+
+          // Automatically trigger saveMarkers after markers have been created
+          this.saveMarkers();
+        }
+      });
     },
 
     saveMarkers() {
