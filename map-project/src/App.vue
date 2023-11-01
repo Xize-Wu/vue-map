@@ -3,11 +3,34 @@
     <h1>Google Map App</h1>
     <div>
       <div>
-        <input v-model="customQuery" placeholder="Name of Location" />
+        <input v-model="customQuery" placeholder="Name of Location" @keyup.enter="searchCustomQuery"/>
         <button @click="searchCustomQuery">Search</button>
       </div>
       <div id="map" style="width: 100%; height: 400px;"></div>
     </div>
+
+    <div>
+      <h2>Search History</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Select</th>
+            <th>Index</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(marker, index) in markers" :key="index">
+            <td>
+              <input type="checkbox" v-model="selectedMarkers" :value="marker" />
+            </td>
+            <td>{{ index + 1 }}</td>
+            <td>{{ marker.query }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
   </div>
 </template>
 
@@ -20,7 +43,7 @@ export default {
       infowindow: null,
       markers: [],
       request: {
-        query: 'Arsenal FC London',
+        query: '',
         fields: ['name', 'geometry'],
       },
     };
