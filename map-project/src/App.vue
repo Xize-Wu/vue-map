@@ -31,6 +31,12 @@
       </table>
     </div>
 
+    <div>
+      <button @click="prevPage" :disabled="currentPage === 1">←</button>
+      <span>Page {{ currentPage }} of {{ totalPages }}</span>
+      <button @click="nextPage" :disabled="currentPage === totalPages">→</button>
+    </div>
+
   </div>
 </template>
 
@@ -46,8 +52,23 @@ export default {
         query: '',
         fields: ['name', 'geometry'],
       },
+      customQuery: '', // Data property for custom query input
+      selectedMarkers: [], // Data property for selected markers
+      currentPage: 1, // Data property for current page
+      pageSize: 10, // Data property for the number of records per page
     };
   },
+  computed: {
+  displayedMarkers() {
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    return this.markers.slice(startIndex, endIndex);
+  },
+  totalPages() {
+    return Math.ceil(this.markers.length / this.pageSize);
+  },
+},
+
   mounted() {
     window.initMap = this.initMap;
 
