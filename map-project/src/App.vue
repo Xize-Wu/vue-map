@@ -125,8 +125,8 @@ export default {
 
           this.map.setCenter(results[0].geometry.location);
 
-          // Automatically trigger saveMarkers after markers have been created
           this.saveMarkers();
+          this.customQuery = '';
         }
       });
     },
