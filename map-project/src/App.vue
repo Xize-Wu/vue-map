@@ -58,21 +58,26 @@ export default {
     createMarker(place) {
       if (!place.geometry || !place.geometry.location) return;
 
+      const position = place.geometry.location;
       const marker = new google.maps.Marker({
         map: this.map,
-        position: place.geometry.location,
+        position: position,
       });
 
       marker.place = place;
 
-      this.markers.push(marker);
+      const markerInfo = {
+        latitude: position.lat(),
+        longitude: position.lng(),
+        query: this.request.query,
+      };
+
+      this.markers.push(markerInfo);
     },
 
     saveMarkers() {
       console.log("Auto-triggered saveMarkers");
       console.log(this.markers);
-      console.log("Request object:");
-      console.log(this.request);
     },
   },
 };
