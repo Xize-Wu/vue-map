@@ -22,10 +22,9 @@ export default {
     };
   },
   mounted() {
-    // Define the global initMap function
     window.initMap = this.initMap;
 
-    // Check if the Google Maps API has already been loaded. Re-write with error handler later
+// Error handler needed!
     if (typeof google !== 'undefined') {
       this.initMap();
       console.log("Fuiyoh! You have a functional Google Map API!");
@@ -51,6 +50,8 @@ export default {
           }
 
           this.map.setCenter(results[0].geometry.location);
+
+          this.saveMarkers();
         }
       });
     },
@@ -63,6 +64,15 @@ export default {
       });
 
       marker.place = place;
+
+      this.markers.push(marker);
+    },
+
+    saveMarkers() {
+      console.log("Auto-triggered saveMarkers");
+      console.log(this.markers);
+      console.log("Request object:");
+      console.log(this.request);
     },
   },
 };
