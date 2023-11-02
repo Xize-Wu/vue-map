@@ -28,11 +28,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(marker, index) in markers" :key="index">
+          <tr v-for="(marker, index) in displayedMarkers" :key="index">
             <td>
-              <input type="checkbox" v-model="selectedMarkers" :value="marker" />
+              <input type="checkbox" v-model="marker.selected" :value="marker" />
             </td>
-            <td>{{ index + 1 }}</td>
+            <td>{{ index + 1 + (currentPage -1)* 10}}</td>
             <td>{{ marker.query }}</td>
           </tr>
         </tbody>
@@ -62,7 +62,6 @@ export default {
         fields: ['name', 'geometry'],
       },
       customQuery: '',
-      selectedMarkers: [],
       currentPage: 1,
       pageSize: 10,
       lastMarker: { timeZone: '', localTime: '' },
@@ -98,6 +97,7 @@ export default {
       this.map = new google.maps.Map(this.$el.querySelector('#map'), {
         center: toronto,
         zoom: 15,
+        mapTypeId: 'roadmap', 
       });
 
       this.service = new google.maps.places.PlacesService(this.map);
@@ -135,6 +135,7 @@ export default {
         latitude: position.lat(),
         longitude: position.lng(),
         query: this.request.query,
+        selected: false,
       };
 
       this.lastMarker = { timeZone, localTime };
@@ -164,8 +165,29 @@ export default {
 
 
     deleteSelectedMarkers() {
-      this.markers = this.markers.filter((marker) => !this.selectedMarkers.includes(marker));
-      this.selectedMarkers = [];
+      this.markers = this.markers.filter((marker) => !marker.selected);
+    },
+
+    renderTable(currentPage, pageSize) {
+      const startIndex = (currentPage - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      this.displayedMarkers = this.markers.slice(startIndex, endIndex);
+
+      this.totalPages = Math.ceil(this.markers.length / pageSize);
+    },
+
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+        this.renderTable(this.currentPage, this.pageSize);
+      }
+    },
+
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+        this.renderTable(this.currentPage, this.pageSize);
+      }
     },
 
   },
@@ -193,6 +215,8 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin: 0 auto;
+  max-height: 400px;
+  overflow: auto;
 }
 
 th,
@@ -235,8 +259,7 @@ h1 {
 
 #map{
   width: 75%;
-  height: 100vh;
-
+  height: 400px;
   margin: 20px 0;
 }
 
