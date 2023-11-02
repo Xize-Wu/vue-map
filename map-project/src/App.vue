@@ -6,7 +6,8 @@
       <div class="col-md-8">
 
         <div class="search-bar">
-          <input v-model="customQuery" class="form-control" placeholder="Name of Location" @keyup.enter="searchCustomQuery" />
+          <input v-model="customQuery" class="form-control" placeholder="Name of Location"
+            @keyup.enter="searchCustomQuery" />
           <button @click="searchCustomQuery" class="btn btn-primary">Search</button>
         </div>
 
@@ -18,13 +19,13 @@
           <h3>Time Zone and Local Time of the Last Marker </h3>
           <div v-if="displayedMarkers.length === 0">
             <p>Time Zone: N/A</p>
-          <p>Local Time: N/A</p>
+            <p>Local Time: N/A</p>
 
           </div>
           <div v-if="displayedMarkers.length > 0">
 
-          <p>Time Zone: {{ lastMarker.timeZone }}</p>
-          <p>Local Time: {{ lastMarker.localTime }}</p>
+            <p>Time Zone: {{ lastMarker.timeZone }}</p>
+            <p>Local Time: {{ lastMarker.localTime }}</p>
           </div>
         </div>
 
@@ -97,13 +98,14 @@ export default {
 
   mounted() {
     window.initMap = this.initMap;
-
-    // Error handler needed!
-    if (typeof google !== 'undefined') {
-      this.initMap();
-      console.log("Fuiyoh! You have a functional Google Map API!");
-    } else {
-      console.log("Haiyaa... Google Map API has not been loaded. Is your API key valid?");
+    try {
+      if (typeof google !== 'undefined') {
+        this.initMap();
+      } else {
+        this.handleGoogleMapsAPINotAvailable();
+      }
+    } catch (error) {
+      console.error(error);
     }
   },
   methods: {
@@ -206,6 +208,10 @@ export default {
         this.renderTable(this.currentPage, this.pageSize);
       }
     },
+
+    handleGoogleMapsAPINotAvailable() {
+      alert("Google Maps API is not available. Please check your API key and try again.");
+    }
 
   },
 };
