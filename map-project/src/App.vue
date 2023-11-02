@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div className="map-container">
     <h1>Google Map App</h1>
     <div>
-      <div>
+      <div className="search-bar">
         <input v-model="customQuery" placeholder="Name of Location" @keyup.enter="searchCustomQuery" />
         <button @click="searchCustomQuery">Search</button>
       </div>
@@ -11,7 +11,7 @@
         <p>Time Zone: {{ lastMarker.timeZone }}</p>
         <p>Local Time: {{ lastMarker.localTime }}</p>
       </div>
-      <div id="map" style="width: 100%; height: 400px;"></div>
+      <div id="map"></div>
     </div>
 
     <div>
@@ -46,6 +46,7 @@
     </div>
 
   </div>
+
 </template>
 
 <script>
@@ -64,7 +65,7 @@ export default {
       selectedMarkers: [],
       currentPage: 1,
       pageSize: 10,
-      lastMarker: { timeZone: '', localTime: '' }, 
+      lastMarker: { timeZone: '', localTime: '' },
     };
   },
   computed: {
@@ -141,25 +142,25 @@ export default {
     },
 
     async getTimeZoneAndLocalTime(lat, lng) {
-    try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=AIzaSyBT-zccmJ_6zmyO5utOPC5b_eUBrTQL3AA`
-      );
+      try {
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/timezone/json?location=${lat},${lng}&timestamp=${Math.floor(Date.now() / 1000)}&key=AIzaSyBT-zccmJ_6zmyO5utOPC5b_eUBrTQL3AA`
+        );
 
-      if (response.ok) {
-        const data = await response.json();
-        if (data.timeZoneId) {
-          const timeZone = data.timeZoneId;
-          const localTime = new Date().toLocaleString('en-US', { timeZone });
-          return { timeZone, localTime };
+        if (response.ok) {
+          const data = await response.json();
+          if (data.timeZoneId) {
+            const timeZone = data.timeZoneId;
+            const localTime = new Date().toLocaleString('en-US', { timeZone });
+            return { timeZone, localTime };
+          }
         }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
-    }
 
-    return { timeZone: '', localTime: '' };
-  },
+      return { timeZone: '', localTime: '' };
+    },
 
 
     deleteSelectedMarkers() {
@@ -170,3 +171,68 @@ export default {
   },
 };
 </script>
+
+<style>
+
+button {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background-color: #f0f0f0;
+}
+
+tr:nth-child(even) {
+  background-color: #ecf0f1;
+}
+
+.map-container {
+  display: flex;
+  flex-direction: column;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px 0;
+  background-color: #F5F5DC;
+}
+
+.search-bar{
+  display:flex;
+  justify-content: center;
+}
+
+h1 {
+  font-size: 28px;
+  margin: 20px 0;
+  color: #3498db;
+}
+
+#map{
+  width: 75%;
+  height: 400px;
+}
+
+</style>
