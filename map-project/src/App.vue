@@ -1,7 +1,7 @@
 <template>
   <div className="map-container">
     <h1>Google Map App</h1>
-    <div>
+
       <div className="search-bar">
         <input v-model="customQuery" placeholder="Name of Location" @keyup.enter="searchCustomQuery" />
         <button @click="searchCustomQuery">Search</button>
@@ -12,7 +12,7 @@
         <p>Local Time: {{ lastMarker.localTime }}</p>
       </div>
       <div id="map"></div>
-    </div>
+
 
     <div>
       <h2>Search History</h2>
@@ -192,6 +192,7 @@ button:hover {
 table {
   width: 100%;
   border-collapse: collapse;
+  margin: 0 auto;
 }
 
 th,
@@ -213,10 +214,12 @@ tr:nth-child(even) {
   flex-direction: column;
   font-family: Arial, sans-serif;
   text-align: center;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   padding: 20px 0;
   background-color: #F5F5DC;
+  justify-content: center;
+  align-items: center; 
 }
 
 .search-bar{
@@ -232,7 +235,9 @@ h1 {
 
 #map{
   width: 75%;
-  height: 400px;
+  height: 100vh;
+
+  margin: 20px 0;
 }
 
 </style>
