@@ -1,52 +1,69 @@
 <template>
-  <div className="map-container">
+  <div class="container">
     <h1>Google Map App</h1>
 
-      <div className="search-bar">
-        <input v-model="customQuery" placeholder="Name of Location" @keyup.enter="searchCustomQuery" />
-        <button @click="searchCustomQuery">Search</button>
-      </div>
-      <div>
-        <h2>Time Zone Info</h2>
-        <p>Time Zone: {{ lastMarker.timeZone }}</p>
-        <p>Local Time: {{ lastMarker.localTime }}</p>
-      </div>
-      <div id="map"></div>
+    <div class="row">
+      <div class="col-md-8">
 
+        <div class="search-bar">
+          <input v-model="customQuery" class="form-control" placeholder="Name of Location" @keyup.enter="searchCustomQuery" />
+          <button @click="searchCustomQuery" class="btn btn-primary">Search</button>
+        </div>
 
-    <div>
-      <h2>Search History</h2>
-      <div>
-        <button @click="deleteSelectedMarkers">Delete</button>
+        <div class="map" id="map"></div>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Select</th>
-            <th>Index</th>
-            <th>Location</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(marker, index) in displayedMarkers" :key="index">
-            <td>
-              <input type="checkbox" v-model="marker.selected" :value="marker" />
-            </td>
-            <td>{{ index + 1 + (currentPage -1)* 10}}</td>
-            <td>{{ marker.query }}</td>
-          </tr>
-        </tbody>
-      </table>
+
+      <div class="col-md-4">
+        <div>
+          <h3>Time Zone and Local Time of the Last Marker </h3>
+          <div v-if="displayedMarkers.length === 0">
+            <p>Time Zone: N/A</p>
+          <p>Local Time: N/A</p>
+
+          </div>
+          <div v-if="displayedMarkers.length > 0">
+
+          <p>Time Zone: {{ lastMarker.timeZone }}</p>
+          <p>Local Time: {{ lastMarker.localTime }}</p>
+          </div>
+        </div>
+
+        <div>
+          <h3>Search History</h3>
+          <p v-if="displayedMarkers.length === 0">There's no search history for now</p>
+          <div v-if="displayedMarkers.length > 0">
+            <div>
+              <button @click="deleteSelectedMarkers" class="btn btn-danger">Delete</button>
+            </div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Select</th>
+                  <th>Index</th>
+                  <th>Location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(marker, index) in displayedMarkers" :key="index">
+                  <td>
+                    <input type="checkbox" v-model="marker.selected" :value="marker" />
+                  </td>
+                  <td>{{ index + 1 + (currentPage - 1) * 10 }}</td>
+                  <td>{{ marker.query }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="pagination">
+              <button @click="prevPage" :disabled="currentPage === 1" class="btn btn-primary">←</button>
+              <span>Page {{ currentPage }} of {{ totalPages }}</span>
+              <button @click="nextPage" :disabled="currentPage === totalPages" class="btn btn-primary">→</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div>
-      <button @click="prevPage" :disabled="currentPage === 1">←</button>
-      <span>Page {{ currentPage }} of {{ totalPages }}</span>
-      <button @click="nextPage" :disabled="currentPage === totalPages">→</button>
-    </div>
-
   </div>
-
 </template>
 
 <script>
@@ -97,7 +114,7 @@ export default {
       this.map = new google.maps.Map(this.$el.querySelector('#map'), {
         center: toronto,
         zoom: 15,
-        mapTypeId: 'roadmap', 
+        mapTypeId: 'roadmap',
       });
 
       this.service = new google.maps.places.PlacesService(this.map);
@@ -195,72 +212,8 @@ export default {
 </script>
 
 <style>
-
-button {
-  background-color: #3498db;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border: 5px;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background-color 0.3s;
-}
-
-button:hover {
-  background-color: #2980b9;
-}
-
-table {
+.map {
   width: 100%;
-  border-collapse: collapse;
-  margin: 0 auto;
-  max-height: 400px;
-  overflow: auto;
-}
-
-th,
-td {
-  padding: 10px;
-  text-align: left;
-}
-
-th {
-  background-color: #f0f0f0;
-}
-
-tr:nth-child(even) {
-  background-color: #ecf0f1;
-}
-
-.map-container {
-  display: flex;
-  flex-direction: column;
-  font-family: Arial, sans-serif;
-  text-align: center;
-  width: 100%;
-  height: 100vh;
-  padding: 20px 0;
-  background-color: #F5F5DC;
-  justify-content: center;
-  align-items: center; 
-}
-
-.search-bar{
-  display:flex;
-  justify-content: center;
-}
-
-h1 {
-  font-size: 28px;
-  margin: 20px 0;
-  color: #3498db;
-}
-
-#map{
-  width: 75%;
   height: 400px;
-  margin: 20px 0;
 }
-
 </style>
